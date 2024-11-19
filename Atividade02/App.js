@@ -2,17 +2,17 @@ import React, { useState, useRef, useMemo } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, SafeAreaView, Keyboard } from 'react-native';
 
 export default function App() {
-  const [latitude, setLat] = useState('');
-  const [longitude, setLong] = useState('');
-  const inputRefLat = useRef(null);
-  const inputRefLon = useRef(null);
-  const [weatherData, setClima] = useState(null);
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const inputLatitude = useRef(null);
+  const inputLongitude = useRef(null);
+  const [weatherData, setWeatherData] = useState(null);
 
   const apiKey = '3496ae1dfc0e28d70684096ee2751d6a';
 
-  async function aviso() {
+  async function fetchWeather() {
     if (!latitude || !longitude) {
-      alert('Digite valores válidos para latitude e longitude');
+      alert('Por favor, insira valores válidos de latitude e longitude');
       return;
     }
 
@@ -22,13 +22,13 @@ export default function App() {
       );
       const data = await response.json();
       if (response.ok) {
-        setClima(data);
+        setWeatherData(data);
       } else {
-        alert('Erro: ' + data.message);
+        alert('Erro ao obter dados: ' + data.message);
       }
       Keyboard.dismiss();
     } catch (error) {
-      console.log('Erro ao buscar os dados climáticos: ' + error);
+      console.error('Erro na solicitação dos dados climáticos:', error);
     }
   }
 
@@ -46,38 +46,38 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 50 }}>
-        <Text style={styles.text}>Consulta de Clima</Text>
+        <Text style={styles.title}>Consulta de Clima</Text>
         <TextInput
           style={styles.input}
           placeholder="Latitude"
           value={latitude}
-          onChangeText={(text) => setLat(text)}
+          onChangeText={(text) => setLatitude(text)}
           keyboardType="numeric"
-          ref={inputRefLat}
+          ref={inputLatitude}
         />
         <TextInput
           style={styles.input}
           placeholder="Longitude"
           value={longitude}
-          onChangeText={(text) => setLong(text)}
+          onChangeText={(text) => setLongitude(text)}
           keyboardType="numeric"
-          ref={inputRefLon}
+          ref={inputLongitude}
         />
       </View>
 
-      <View style={styles.areaBtn}>
-        <TouchableOpacity style={[styles.btn, { backgroundColor: '#0782F9' }]} onPress={aviso}>
-          <Text style={styles.btnText}>Buscar Clima</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#0782F9' }]} onPress={fetchWeather}>
+          <Text style={styles.buttonText}>Buscar Clima</Text>
         </TouchableOpacity>
       </View>
 
       {weatherDetails && (
-        <View style={styles.resultado}>
-          <View style={styles.climaBox}>
-            <Text style={styles.itemText}>Temperatura: {weatherDetails.temperatura}°C</Text>
-            <Text style={styles.itemText}>Umidade: {weatherDetails.umidade}%</Text>
-            <Text style={styles.itemText}>Descrição: {weatherDetails.descricao}</Text>
-            <Text style={styles.itemText}>Vento: {weatherDetails.vento} m/s</Text>
+        <View style={styles.weatherResult}>
+          <View style={styles.weatherBox}>
+            <Text style={styles.detailText}>Temperatura: {weatherDetails.temperatura}°C</Text>
+            <Text style={styles.detailText}>Umidade: {weatherDetails.umidade}%</Text>
+            <Text style={styles.detailText}>Descrição: {weatherDetails.descricao}</Text>
+            <Text style={styles.detailText}>Vento: {weatherDetails.vento} m/s</Text>
           </View>
         </View>
       )}
@@ -90,10 +90,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f0f0f0',
   },
-  text: {
-    fontSize: 25,
+  title: {
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   input: {
     width: '90%',
@@ -103,15 +103,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     fontSize: 18,
-    marginBottom: 10,
+    marginBottom: 15,
   },
-  areaBtn: {
+  buttonContainer: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 15,
+    marginTop: 20,
   },
-  btn: {
+  button: {
     height: 70,
     padding: 15,
     borderRadius: 5,
@@ -119,25 +119,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '90%',
   },
-  btnText: {
+  buttonText: {
     color: '#FFF',
     fontSize: 22,
   },
-  resultado: {
+  weatherResult: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: -600,
+    marginTop: 40,
   },
-  climaBox: {
+  weatherBox: {
     backgroundColor: '#FFF',
     padding: 15,
     borderRadius: 5,
     width: '90%',
     alignItems: 'flex-start',
-    marginTop: 10,
+    marginTop: -600,
   },
-  itemText: {
+  detailText: {
     fontSize: 18,
     marginVertical: 5,
     textAlign: 'right',
