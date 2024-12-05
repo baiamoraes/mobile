@@ -2,20 +2,18 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import DolarScreen from './src/screens/Dolar';
-import EuroScreen from './src/screens/Euro';
+import Dolar from './src/screens/Dolar'; 
+import Euro from './src/screens/Euro';   
 
-const DrawerNavigator = createDrawerNavigator();
+const Drawer = createDrawerNavigator();
 
-function App() {
+export default function App() {
   return (
     <NavigationContainer>
-      <DrawerNavigator.Navigator initialRouteName="Dólar Americano">
-        <DrawerNavigator.Screen name="Dólar Americano" component={DolarScreen} />
-        <DrawerNavigator.Screen name="Euro" component={EuroScreen} />
-      </DrawerNavigator.Navigator>
+      <Drawer.Navigator initialRouteName="Dólar Americano">
+        <Drawer.Screen name="Dólar Americano" component={Dolar} />
+        <Drawer.Screen name="Euro" component={Euro} />
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 }
-
-export default App;
