@@ -1,30 +1,29 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function useExchangeRate() {
-  const [exchangeRate, setExchangeRate] = useState({ USD: null, EUR: null });
-  const [loading, setLoading] = useState(true);
+export default function useTaxas() {
+  const [taxas, definirTaxas] = useState({ USD: null, EUR: null });
+  const [carregando, definirCarregamento] = useState(true);
 
-  async function fetchExchangeRate() {
-    setLoading(true);
+  async function atualizarTaxas() {
+    definirCarregamento(true);
     try {
-      const response = await axios.get('https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL');
-      const { USDBRL, EURBRL } = response.data;
-      setExchangeRate({
-        USD: USDBRL.ask,
-        EUR: EURBRL.ask,
+      const resposta = await axios.get('https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL');
+      definirTaxas({
+        USD: resposta.data.USDBRL.ask,
+        EUR: resposta.data.EURBRL.ask,
       });
-    } catch (error) {
-      console.error(error);
+    } catch (erro) {
+      console.log('Erro ao buscar cotação:', erro);
     }
-    setLoading(false);
+    definirCarregamento(false);
   }
 
   useEffect(() => {
-    fetchExchangeRate();
-    const interval = setInterval(fetchExchangeRate, 30000);
-    return () => clearInterval(interval);
+    atualizarTaxas();
+    const intervalo = setInterval(atualizarTaxas, 30000);
+    return () => clearInterval(intervalo);
   }, []);
 
-  return { exchangeRate, loading, fetchExchangeRate };
+  return { taxas, carregando, atualizarTaxas };
 }
